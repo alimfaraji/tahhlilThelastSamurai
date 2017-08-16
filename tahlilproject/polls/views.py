@@ -17,32 +17,31 @@ from django.template import loader
 from .forms import LoginForm
 from django.contrib.auth.models import User
 
+def index(request):
+    return render(request, 'polls/facility.html', {})
+
+# def mainpage(request):
+#     if request.user.is_authenticated():
+#         return redirect('/registration/login.html')
+#    # ApartmentFormSet = modelformset_factory(Apartment , fields=('number' , 'floor_num'))
+#    # formset = ApartmentFormSet()
+#     return render(request, 'polls/index.html' , {'id' : id})
+
 def loginView(request):
-    # if request.user.is_authenticated():
-    #     redirect('polls/index.html')
+    if request.user.is_authenticated():
+        return HttpResponseRedirect('../home/index/')
     if request.method == 'POST':
         form = LoginForm(request.POST)
         if form.is_valid():
             user = authenticate(username=request.POST['username'], password=request.POST['password']);
             if user is not None:
                 login(request, user)
-                return render(request, 'polls/login2.html')
+                # return redirect('/home/index.html')
+                return HttpResponseRedirect('../home/index/')
             # else:
     else:
         form = LoginForm()
-
     return render(request, 'registration/login.html', {'form': form})
-
-def mainpage1(request):
-   # ApartmentFormSet = modelformset_factory(Apartment , fields=('number' , 'floor_num'))
-   # formset = ApartmentFormSet()
-   #  return render(request, 'polls/index.html' , {'id' : id})
-    return HttpResponse("hello world")
-
-def mainpage(request , id):
-   # ApartmentFormSet = modelformset_factory(Apartment , fields=('number' , 'floor_num'))
-   # formset = ApartmentFormSet()
-    return render(request, 'polls/index.html' , {'id' : id})
 
 def financial(request , id , type):
     print('chtoriiiii', id)
