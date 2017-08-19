@@ -7,7 +7,7 @@ from .models import Apartment
 from .models import Charge , Bill
 from django.conf import settings
 from django.forms import modelformset_factory
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 
 from django.shortcuts import get_object_or_404, render
 
@@ -18,7 +18,13 @@ from .forms import LoginForm
 from django.contrib.auth.models import User
 
 def index(request):
-    return render(request, 'polls/facility.html', {})
+    username = None
+    if request.user.is_authenticated():
+        username = request.user.get_username()
+        context = {}
+        context['user']=username
+        return render(request, 'polls/index.html', context)
+    return render(request, 'polls/facility.html', {}) #todo
 
 # def mainpage(request):
 #     if request.user.is_authenticated():
@@ -26,6 +32,12 @@ def index(request):
 #    # ApartmentFormSet = modelformset_factory(Apartment , fields=('number' , 'floor_num'))
 #    # formset = ApartmentFormSet()
 #     return render(request, 'polls/index.html' , {'id' : id})
+
+def logoutView(request):
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect('/login/')
+    logout(request)
+    return HttpResponseRedirect('/login/')
 
 def loginView(request):
     if request.user.is_authenticated():
