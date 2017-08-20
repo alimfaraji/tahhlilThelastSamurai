@@ -8,31 +8,17 @@ from .models import Charge , Bill
 from django.conf import settings
 from django.forms import modelformset_factory
 from django.contrib.auth import authenticate, login, logout
+from datetime import date
 
 from django.shortcuts import get_object_or_404, render
 
 from django.template import loader
 # Create your views here.
 
-from .forms import LoginForm
+from .forms import LoginForm, bankForm
 from django.contrib.auth.models import User
 
-def index(request):
-    username = None
-    if request.user.is_authenticated():
-        username = request.user.get_username()
-        context = {}
-        context['user']=username
-        return render(request, 'polls/index.html', context)
-    return render(request, 'polls/facility.html', {}) #todo
-
-# def mainpage(request):
-#     if request.user.is_authenticated():
-#         return redirect('/registration/login.html')
-#    # ApartmentFormSet = modelformset_factory(Apartment , fields=('number' , 'floor_num'))
-#    # formset = ApartmentFormSet()
-#     return render(request, 'polls/index.html' , {'id' : id})
-
+#registeration, login and logout:
 def logoutView(request):
     if not request.user.is_authenticated():
         return HttpResponseRedirect('/login/')
@@ -54,6 +40,55 @@ def loginView(request):
     else:
         form = LoginForm()
     return render(request, 'registration/login.html', {'form': form})
+
+
+
+
+
+
+#main parts:
+def index(request):
+    username = None
+    if request.user.is_authenticated():
+        username = request.user.get_username()
+        context = {}
+        context['user']=username
+        return render(request, 'polls/index.html', context)
+    return render(request, 'polls/facility.html', {}) #todo
+
+
+
+#financial:
+def bankView(request, id):
+    bill = Bill.objects.get(id=id)
+    if bill.is_payed == True:
+        return HttpResponseRedirect('../../home/financial/bill/')
+    if request.method == 'POST':
+            form = bankForm(request.POST)
+    else:
+        form = bankForm()
+    if form.is_valid():
+        bill.is_payed = True
+        bill.save()
+    return render(request, 'polls/bank.html', {'form': form})
+
+
+def payBills(request):
+    username = None
+    if request.user.is_authenticated():
+        username = request.user.get_username()
+        user = User.objects.get(username=username)
+        neighbor = Neighbor.objects.all().get(user=user)
+        # neighbor = user.user;
+        context = {}
+        context['user'] = neighbor
+        context['date'] = date.today();
+        bills = {}
+        if neighbor.apartment is not None:
+            bills = Bill.objects.filter(_apartment=neighbor .apartment).order_by('-due_date')
+        context['bills'] = bills
+        return render(request, 'polls/payBills.html', context)
+    return HttpResponseRedirect('/login/')
 
 def financial(request , id , type):
     print('chtoriiiii', id)

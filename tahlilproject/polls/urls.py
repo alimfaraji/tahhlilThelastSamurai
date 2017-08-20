@@ -3,7 +3,8 @@ from django.conf.urls import url
 from . import views
 
 urlpatterns = [
-    url(r'^index/$', views.index, name='index'),
+    url(r'^index/$', views.index, name='index'), #todo done
+    url(r'^financial/bill/$', views.payBills, name='bill'),
     url(r'^(?P<id>[0-9]+)/financial/(?P<type>[\w\-]+)/$' , views.financial , name='financial'),
     url(r'^(?P<id>[0-9]+)/financial/(?P<type>[\w\-]+)/pay/(?P<pay>[0-9]+)/$', views.pay, name='pay'),
     url(r'^(?P<id>[0-9]+)/reservation/(?P<reserve>[0-9]+)/$', views.reservation, name='reservation'),

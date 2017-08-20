@@ -125,18 +125,16 @@ class MonthlyPayment(models.Model):
 
 
 class Bill(models.Model):
+    id = models.IntegerField(primary_key=True)
     title = models.CharField(max_length=30)
     price = models.IntegerField(default=300000)
     due_date = models.DateField('charge due date')
     is_payed = models.BooleanField(default=False)
-    receipt = models.ForeignKey('Receipt', on_delete=models.CASCADE, null=True)
+    receipt = models.ForeignKey('Receipt', on_delete=models.CASCADE,blank=True, null=True)
     _apartment = models.ForeignKey('Apartment', on_delete=models.CASCADE)
 
     class Meta:
         unique_together = ('due_date', '_apartment')
-
-
-
 
 
 class RequestLetter(models.Model):

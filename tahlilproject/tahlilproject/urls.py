@@ -22,4 +22,5 @@ urlpatterns = [
     url(r'^login/', views.loginView, name='login'),
     url(r'^logout/', views.logoutView, name='logout'),
     url(r'^home/', include('polls.urls')),
+    url(r'^bank/([0-9]+)/',views.bankView, name = 'bank')
 ]
