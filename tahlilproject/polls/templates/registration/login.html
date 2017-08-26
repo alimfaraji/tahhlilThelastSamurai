@@ -65,15 +65,16 @@
 {#                <input type="password" class="form-control" placeholder="Password">#}
                 {{ form.password }}
             </div>
-            <label class="checkbox">
-                <input type="checkbox" value="remember-me"> Remember me
-                <span class="pull-right"> <a href="#"> Forgot Password?</a></span>
-            </label>
-            <input class="btn btn-primary btn-lg btn-block" type="submit" value="Submit" />
+{#            <label class="checkbox">#}
+{#                <input type="checkbox" value="remember-me"> Remember me#}
+{#                <span class="pull-right"> <a href="#"> Forgot Password?</a></span>#}
+{#            </label>#}
+            <input name = 'signin' class="btn btn-primary btn-lg btn-block" type="submit" value="Sing In" />
+{#            <input name = 'signup' href="../signup" class="btn btn-primary btn-lg btn-block" type="submit" value="Sign UP" />#}
 {#            <button class="btn btn-primary btn-lg btn-block" type="submit">Login</button>#}
-{#            <button class="btn btn-info btn-lg btn-block" type="submit">Signup</button>#}
         </div>
       </form>
+          or you can <a href="../signup">sign up</a> here.
     </div>
 {#     </form>#}
   </body>

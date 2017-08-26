@@ -14,22 +14,35 @@
                     <div class="profile-widget profile-widget-info">
                           <div class="panel-body">
                             <div class="col-lg-2 col-sm-2">
-                              <h4>Khashayar Gatmiry</h4>
+                              <h4>{{ user.user.username }}</h4>
                               <div class="follow-ava">
                                   {% load static %}
                                   <img src="{% static "polls/img/mypic.jpg" %}" alt="">
                               </div>
-                              <h6>Administrator</h6>
+                              <h6>{{ user.type }}</h6>
                             </div>
                             <div class="col-lg-4 col-sm-4 follow-info">
-                                <p>Here is gonna be a summary of the neighbor</p>
-                                <p>@jgatmiri</p>
-								<p><i class="fa fa-twitter">gatmiritwit</i></p>
+                                <p>{{ user.user.first_name }} {{ user.user.last_name}}</p>
+                                <p>@{{ user.user.username }}</p>
+								<p>{{ user.user.email }}</p>
+                                <p> Date joined:</p>
                                 <h6>
-                                    <span><i class="icon_clock_alt"></i>11:05 AM</span>
-                                    <span><i class="icon_calendar"></i>25.10.13</span>
-                                    <span><i class="icon_pin_alt"></i>IRN</span>
+                                    <span><i class="icon_clock_alt"></i>{{ user.user.date_joined.time}}</span>
+                                    <span><i class="icon_calendar"></i>{{ user.user.date_joined.date }}</span>
+{#                                    <span><i class="icon_pin_alt"></i>{{ user.user.date_joined.timestamp }}</span>#}
                                 </h6>
+                            </div>
+                              <div class="col-lg-4 col-sm-4 follow-info">
+                                  <p>Sex: {{ user.sex}}</p>
+                                <p>National ID: {{ user.national_id }}</p>
+                                <p>Apartment Number:{{user.apartment_id}}</p>
+								<p>Bank account: {{ user.bank_account}}</p>
+{#                                <p> Date joined:</p>#}
+{#                                <h6>#}
+{#                                    <span><i class="icon_clock_alt"></i>{{ user.user.date_joined.time}}</span>#}
+{#                                    <span><i class="icon_calendar"></i>{{ user.user.date_joined.date }}</span>#}
+{#                                    <span><i class="icon_pin_alt"></i>{{ user.user.date_joined.timestamp }}</span>#}
+{#                                </h6>#}
                             </div>
                           </div>
                     </div>
@@ -42,78 +55,170 @@
                           <header class="panel-heading tab-bg-info">
                               <ul class="nav nav-tabs">
                                   <li class="active">
-                                      <a data-toggle="tab" href="#recent-activity">
+                                      <a data-toggle="tab" href="#dashbord">
                                           <i class="icon-home"></i>
-                                          Nofitications
+                                          Dashbord
                                       </a>
                                   </li>
                                   <li>
-                                      <a data-toggle="tab" href="#profile">
+                                      <a data-toggle="tab" href="#messages">
                                           <i class="icon-user"></i>
-                                          Profile
+                                          Messages
                                       </a>
                                   </li>
                                   <li class="">
+                                      <a data-toggle="tab" href="#warnings">
+                                          <i class="icon-envelope"></i>
+                                          Warnings
+                                      </a>
+                                  </li>
+                              <li class="">
                                       <a data-toggle="tab" href="#edit-profile">
                                           <i class="icon-envelope"></i>
                                           Edit Profile
                                       </a>
                                   </li>
+                                  {%  if user.type == 'admin' %}
+                                        <li class="">
+                                      <a data-toggle="tab" href="#admin-section">
+                                          <i class="icon-envelope"></i>
+                                          Admin Section
+                                      </a>
+                                  </li>
+                                  {% endif %}
                               </ul>
                           </header>
                           <div class="panel-body">
                               <div class="tab-content">
-                                  <div 2="recent-activity" class="tab-pane active">
+                                  <div  id = "dashbord" class="tab-pane active">
+                                  {% if user.type == "admin" %}
+                                   <!--collapse start-->
+                      <div class="panel-group m-bot20" id="accordion">
+                          <div class="panel panel-default">
+                              <div class="panel-heading">
+                                  <h4 class="panel-title">
+                                      <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
+                                          Add To Dashboard
+                                      </a>
+                                  </h4>
+                              </div>
+                              <div id="collapseOne" class="panel-collapse collapse">
+{#                                  <div class="panel-body">#}
+{##}
+{#                                      <div class="container">#}
+    <div class="panel-body">
+      <form  method="post">
+          {% csrf_token %}
+          <div class="form-group">
+            <label class="col-sm-2 control-label">Title</label>
+              <div class="col-sm-10">
+              {{ addDashbordForm.title }}
+            </div>
+                <label class="col-sm-2 control-label">Text</label>
+                <div class="col-sm-10">
+              {{ addDashbordForm.text }}
+                </div>
+            <div class="form-group">
+            <input name="addToDashbord" class="btn btn-info btn-lg btn-block" type="submit" value="Write" />
+{#            <button class="btn btn-primary btn-lg btn-block" type="submit">Login</button>#}
+{#            <button class="btn btn-info btn-lg btn-block" type="submit">Signup</button>#}
+            </div>
+          </div>
+      </form>
+        </div>
+{#    </div>#}
+{##}
+{#                                  </div>#}
+                              </div>
+                          </div>
+
+                      </div>
+                      <!--collapse end-->
+                                  {% endif %}
+
                                       <div class="profile-activity">
                                           <div class="act-time">
                                               <div class="activity-body act-in">
                                                   <span class="arrow"></span>
-                                                  <div class="text">
-                                                      {% load static %}
-                                                      <a href="#" class="activity-img"><img class="avatar" src="{% static "polls/img/mypic.jpg"  %}" alt=""></a>
-                                                      <p class="attribution"><a href="#">Khashayar Gatmiry</a> at 4:25pm, 30th Octmber 2014</p>
-                                                      <p>Here is gonna be a list of notifications for a neighbor</p>
-                                                  </div>
+                                                  {% for dashbord in dashbords %}
+                                                  <div class="panel panel-primary">
+                                                      <div class="panel-heading">
+                                                          {% if user.type == 'admin'%}
+                                                        <a name="removeFromDashbord" href="{% url 'removeFromDashbord' dashbord.id %}">remove</a>
+                                                  {% endif %}
+                                                          <strong>{{ dashbord.title }}</strong> {{ dashbord.date_time }}:
+
+
+                                                          </br> </div>
+
+                                                      <div clas="panel-content">{{ dashbord.text }}</div>
+                                                </div>
+                                                  {% endfor %}
                                               </div>
                                           </div>
 
                                       </div>
+
                                   </div>
                                   <!-- profile -->
-                                  <div 2="profile" class="tab-pane">
+                                  <div id="messages" class="tab-pane">
                                     <section class="panel">
-                                      <div class="bio-graph-heading">
-										showing the details of the neighbor
-									 </div>
-                                      <div class="panel-body bio-graph-info">
-                                          <h1>Bio Graph</h1>
-                                          <div class="row">
-                                              <div class="bio-row">
-                                                  <p><span>First Name </span>: Khashayar </p>
-                                              </div>
-                                              <div class="bio-row">
-                                                  <p><span>Last Name </span>: Gatmiry</p>
-                                              </div>
-                                              <div class="bio-row">
-                                                  <p><span>Birthday</span>: 27 August 1987</p>
-                                              </div>
-                                              <div class="bio-row">
-                                                  <p><span>Country </span>: Iran</p>
-                                              </div>
-                                              <div class="bio-row">
-                                                  <p><span>Occupation </span>: UI Designer</p>
-                                              </div>
-                                              <div class="bio-row">
-                                                  <p><span>Email </span>:gatmiry@mailname.com</p>
-                                              </div>
-                                              <div class="bio-row">
-                                                  <p><span>Mobile </span>: 123124235</p>
-                                              </div>
-                                              <div class="bio-row">
-                                                  <p><span>Phone </span>:  12341235123</p>
-                                              </div>
-                                          </div>
-                                      </div>
+                                   <!--collapse start-->
+                      <div class="panel-group m-bot20" id="accordion">
+                          <div class="panel panel-default">
+                              <div class="panel-heading">
+                                  <h4 class="panel-title">
+                                      <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">
+                                          Send Message
+                                      </a>
+                                  </h4>
+                              </div>
+                              <div id="collapseTwo" class="panel-collapse collapse">
+{#                                  <div class="panel-body">#}
+{##}
+{#                                      <div class="container">#}
+    <div class="panel-body">
+      <form  method="post">
+          {% csrf_token %}
+          <div class="form-group">
+              <label class="col-sm-2 control-label">To</label>
+              <div class="col-sm-10">
+              {{ sendMessageForm.recievers }}
+            </div>
+            <label class="col-sm-2 control-label">Title</label>
+              <div class="col-sm-10">
+              {{ sendMessageForm.title }}
+            </div>
+              <label class="col-sm-2 control-label">Type</label>
+                <div class="col-sm-10">
+              {{ sendMessageForm.type }}
+                </div>
+                <label class="col-sm-2 control-label">Text</label>
+                <div class="col-sm-10">
+              {{ sendMessageForm.text }}
+                </div>
+            <div class="form-group">
+            <input name="sendingMessage" class="btn btn-info btn-lg btn-block" type="submit" value="Send" />
+{#            <button class="btn btn-primary btn-lg btn-block" type="submit">Login</button>#}
+{#            <button class="btn btn-info btn-lg btn-block" type="submit">Signup</button>#}
+            </div>
+          </div>
+      </form>
+        </div>
+{#    </div>#}
+{##}
+{#                                  </div>#}
+                              </div>
+                          </div>
+
+                      </div>
+                      <!--collapse end-->
+                                      {% for message in messages%}
+                                                  <div class="panel panel-info">
+                                                      <div class="panel-heading"> <strong>{{ message.title }}</strong>: {{ message.type }}: from {{ message.sender.user.first_name  }} {{ message.sender.user.last_name }} </br> </div>
+                                                      <div clas="panel-content">{{ message.text }}</div>
+                                                </div>
+                                                  {% endfor %}
                                     </section>
                                       <section>
                                           <div class="row">
@@ -121,76 +226,257 @@
                                       </section>
                                   </div>
                                   <!-- edit-profile -->
-                                  <div id="edit-profile" class="tab-pane">
+                                  <div id="warnings" class="tab-pane">
                                     <section class="panel">
-                                          <div class="panel-body bio-graph-info">
-                                              <h1> Profile Info</h1>
-                                              <form class="form-horizontal" role="form">
-                                                  <div class="form-group">
-                                                      <label class="col-lg-2 control-label">First Name</label>
-                                                      <div class="col-lg-6">
-                                                          <input type="text" class="form-control" id="f-name" placeholder=" ">
-                                                      </div>
-                                                  </div>
-                                                  <div class="form-group">
-                                                      <label class="col-lg-2 control-label">Last Name</label>
-                                                      <div class="col-lg-6">
-                                                          <input type="text" class="form-control" id="l-name" placeholder=" ">
-                                                      </div>
-                                                  </div>
-                                                  <div class="form-group">
-                                                      <label class="col-lg-2 control-label">About Me</label>
-                                                      <div class="col-lg-10">
-                                                          <textarea name="" id="" class="form-control" cols="30" rows="5"></textarea>
-                                                      </div>
-                                                  </div>
-                                                  <div class="form-group">
-                                                      <label class="col-lg-2 control-label">Country</label>
-                                                      <div class="col-lg-6">
-                                                          <input type="text" class="form-control" id="c-name" placeholder=" ">
-                                                      </div>
-                                                  </div>
-                                                  <div class="form-group">
-                                                      <label class="col-lg-2 control-label">Birthday</label>
-                                                      <div class="col-lg-6">
-                                                          <input type="text" class="form-control" id="b-day" placeholder=" ">
-                                                      </div>
-                                                  </div>
-                                                  <div class="form-group">
-                                                      <label class="col-lg-2 control-label">Occupation</label>
-                                                      <div class="col-lg-6">
-                                                          <input type="text" class="form-control" id="occupation" placeholder=" ">
-                                                      </div>
-                                                  </div>
-                                                  <div class="form-group">
-                                                      <label class="col-lg-2 control-label">Email</label>
-                                                      <div class="col-lg-6">
-                                                          <input type="text" class="form-control" id="email" placeholder=" ">
-                                                      </div>
-                                                  </div>
-                                                  <div class="form-group">
-                                                      <label class="col-lg-2 control-label">Mobile</label>
-                                                      <div class="col-lg-6">
-                                                          <input type="text" class="form-control" id="mobile" placeholder=" ">
-                                                      </div>
-                                                  </div>
-                                                  <div class="form-group">
-                                                      <label class="col-lg-2 control-label">Website URL</label>
-                                                      <div class="col-lg-6">
-                                                          <input type="text" class="form-control" id="url" placeholder="http://www.demowebsite.com ">
-                                                      </div>
-                                                  </div>
-
-                                                  <div class="form-group">
-                                                      <div class="col-lg-offset-2 col-lg-10">
-                                                          <button type="submit" class="btn btn-primary">Save</button>
-                                                          <button type="button" class="btn btn-danger">Cancel</button>
-                                                      </div>
-                                                  </div>
-                                              </form>
-                                          </div>
+                                          {% for warning in warnings%}
+                                                  <div class="panel panel-warning">
+                                                      <div class="panel-heading"> <strong>{{ warning.number }}</strong></div>
+                                                      <div clas="panel-content">{{ warning.text }}</div>
+                                                </div>
+                                                  {% endfor %}
                                       </section>
                                   </div>
+
+
+
+                              <div id="edit-profile" class="tab-pane">
+                                    <section class="panel">
+                                          <form  method="post">
+          {% csrf_token %}
+          <div class="form-group">
+            <label class="col-sm-2 control-label">First Name</label>
+              <div class="col-sm-10">
+              {{ editProfileForm.firstName }}
+            </div>
+                <label class="col-sm-2 control-label">Last Name</label>
+                <div class="col-sm-10">
+              {{ editProfileForm.lastName }}
+                </div>
+              <label class="col-sm-2 control-label">Email Address</label>
+                <div class="col-sm-10">
+              {{ editProfileForm.emailAddress }}
+                </div>
+              <label class="col-sm-2 control-label">Apartment ID</label>
+                <div class="col-sm-10">
+              {{ editProfileForm.apartmentID }}
+                </div>
+              <label class="col-sm-2 control-label">Type</label>
+                <div class="col-sm-10">
+              {{ editProfileForm.type }}
+                </div>
+              <label class="col-sm-2 control-label">Bank</label>
+                <div class="col-sm-10">
+              {{ editProfileForm.bank }}
+                </div>
+              <label class="col-sm-2 control-label">Bank Account</label>
+                <div class="col-sm-10">
+              {{ editProfileForm.bankAccount }}
+                </div>
+            <div class="form-group">
+            <input name="editingProfile" class="btn btn-info btn-lg btn-block" type="submit" value="Edit" />
+{#            <button class="btn btn-primary btn-lg btn-block" type="submit">Login</button>#}
+{#            <button class="btn btn-info btn-lg btn-block" type="submit">Signup</button>#}
+            </div>
+          </div>
+      </form>
+                                      </section>
+                                  </div>
+
+                              {% if user.type == 'admin' %}
+                                <div id="admin-section" class="tab-pane">
+                                    <section class="panel">
+                                          <div class="panel-group m-bot20" id="accordion3">
+                          <div class="panel panel-default">
+                              <div class="panel-heading">
+                                  <h4 class="panel-title">
+                                      <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion3" href="#add-building">
+                                          Add Building
+                                      </a>
+                                  </h4>
+                              </div>
+                              <div id="add-building" class="panel-collapse collapse">
+{#                                  <div class="panel-body">#}
+{##}
+{#                                      <div class="container">#}
+    <div class="panel-body">
+      <form  method="post">
+          {% csrf_token %}
+          <div class="form-group">
+            <label class="col-sm-2 control-label">Postal Code</label>
+              <div class="col-sm-10">
+              {{ addBuilding.postalCode }}
+            </div>
+                <label class="col-sm-2 control-label">City</label>
+                <div class="col-sm-10">
+              {{ addBuilding.city }}
+                </div>
+              <label class="col-sm-2 control-label">Street</label>
+                <div class="col-sm-10">
+              {{ addBuilding.street }}
+                </div>
+              <label class="col-sm-2 control-label">Number</label>
+                <div class="col-sm-10">
+              {{ addBuilding.number }}
+                </div>
+            <div class="form-group">
+            <input name="addingBuilding" class="btn btn-info btn-lg btn-block" type="submit" value="Add" />
+{#            <button class="btn btn-primary btn-lg btn-block" type="submit">Login</button>#}
+{#            <button class="btn btn-info btn-lg btn-block" type="submit">Signup</button>#}
+            </div>
+          </div>
+      </form>
+        </div>
+{#    </div>#}
+{##}
+{#                                  </div>#}
+                              </div>
+                          </div>
+
+
+                          <div class="panel panel-default">
+                              <div class="panel-heading">
+                                  <h4 class="panel-title">
+                                      <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion3" href="#add-apartment">
+                                          Add Apartment
+                                      </a>
+                                  </h4>
+                              </div>
+                              <div id="add-apartment" class="panel-collapse collapse">
+{#                                  <div class="panel-body">#}
+{##}
+{#                                      <div class="container">#}
+    <div class="panel-body">
+      <form  method="post">
+          {% csrf_token %}
+          <div class="form-group">
+            <label class="col-sm-2 control-label">Postal Code</label>
+              <div class="col-sm-10">
+              {{ addApartment.buildingPostalCode}}
+            </div>
+                <label class="col-sm-2 control-label">Floor</label>
+                <div class="col-sm-10">
+              {{ addApartment.floor}}
+                </div>
+            <div class="form-group">
+            <input name="addingApartment" class="btn btn-info btn-lg btn-block" type="submit" value="Add" />
+{#            <button class="btn btn-primary btn-lg btn-block" type="submit">Login</button>#}
+{#            <button class="btn btn-info btn-lg btn-block" type="submit">Signup</button>#}
+            </div>
+          </div>
+      </form>
+        </div>
+{#    </div>#}
+{##}
+{#                                  </div>#}
+                              </div>
+                          </div>
+
+
+{#                                              add neighbor#}
+
+                                                <div class="panel panel-default">
+                              <div class="panel-heading">
+                                  <h4 class="panel-title">
+                                      <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion3" href="#add-neighbor">
+                                          Add Neighbor
+                                      </a>
+                                  </h4>
+                              </div>
+                              <div id="add-neighbor" class="panel-collapse collapse">
+{#                                  <div class="panel-body">#}
+{##}
+{#                                      <div class="container">#}
+    <div class="panel-body">
+      <form class="form-horizontal " method='post'>
+                                  {% csrf_token %}
+                                  <div class="form-group">
+                                      <label class="col-sm-2 control-label">First Name:</label>
+                                      <div class="col-sm-10">
+{#                                          <input type="text" class="form-control">#}
+                                          {{ addNeighbor.firstName }}
+                                      </div>
+                                  </div>
+                                  <div class="form-group">
+                                      <label class="col-sm-2 control-label">Last Name:</label>
+                                      <div class="col-sm-10">
+{#                                          <input type="text" class="form-control">#}
+                                          {{ addNeighbor.lastName }}
+                                      </div>
+                                  </div>
+                                  <div class="form-group">
+                                      <label class="col-sm-2 control-label">Email:</label>
+                                      <div class="col-sm-10">
+{#                                          <input type="text" class="form-control">#}
+                                          {{ addNeighbor.emailAddress }}
+                                      </div>
+                                  </div>
+                                  <div class="form-group">
+                                      <label class="col-sm-2 control-label">Username:</label>
+                                      <div class="col-sm-10">
+{#                                          <input type="text" class="form-control">#}
+                                          {{ addNeighbor.username }}
+                                      </div>
+                                  </div>
+                                  <div class="form-group">
+                                      <label class="col-sm-2 control-label">Password</label>
+                                      <div class="col-sm-10">
+                                          {{ addNeighbor.password }}
+{#                                          <input type="text" class="form-control">#}
+{#                                          <span class="help-block">A block of help text that breaks onto a new line and may extend beyond one line.</span>#}
+                                      </div>
+                                  </div>
+                                  <div class="form-group">
+                                      <label class="col-sm-2 control-label">National ID</label>
+                                      <div class="col-sm-10">
+{#                                          <input type="text" class="form-control round-input">#}
+                                            {{ addNeighbor.nationalID }}
+                                      </div>
+                                  </div>
+                                  <div class="form-group">
+                                      <label class="col-sm-2 control-label">apartment ID</label>
+                                      <div class="col-sm-10">
+                                          {{ addNeighbor.apartmentID }}
+{#                                          <input class="form-control" id="focusedInput" type="text" value="This is focused...">#}
+                                      </div>
+                                  </div>
+                                  <div class="form-group">
+                                      <label class="col-sm-2 control-label">sex</label>
+                                      <div class="col-sm-10">
+                                          {{ addNeighbor.sex }}
+{#                                          <input class="form-control" id="disabledInput" type="text" placeholder="Disabled input here..." disabled>#}
+                                      </div>
+                                  </div>
+                                  <div class="form-group">
+                                      <label class="col-sm-2 control-label">bank</label>
+                                      <div class="col-sm-10">
+                                          {{ addNeighbor.bank}}
+{#                                          <input type="text"  class="form-control" placeholder="placeholder">#}
+                                      </div>
+                                  </div>
+                                  <div class="form-group">
+                                      <label class="col-sm-2 control-label">Bank Account</label>
+                                      <div class="col-sm-10">
+                                          {{ addNeighbor.bankAccount }}
+{#                                          <input type="password"  class="form-control" placeholder="">#}
+                                      </div>
+                                  </div>
+            <input name="addingNeighbor" class="btn btn-info btn-lg btn-block" type="submit" value="Add" />
+            </div>
+          </div>
+      </form>
+        </div>
+{#    </div>#}
+{##}
+{#                                  </div>#}
+                              </div>
+                          </div>
+
+{#                                              end: add neighbor#}
+                                          </div>
+
+                                      </section>
+                                  </div>
+                              {% endif %}
                               </div>
                           </div>
                       </section>

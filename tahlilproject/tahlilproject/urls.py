@@ -21,6 +21,7 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^login/', views.loginView, name='login'),
     url(r'^logout/', views.logoutView, name='logout'),
+    url(r'^signup/', views.signupView, name='signup'),
     url(r'^home/', include('polls.urls')),
-    url(r'^bank/([0-9]+)/',views.bankView, name = 'bank')
+    url(r'^bank/([a-z]+)/([0-9]+)/',views.bankView, name = 'bank'),
 ]

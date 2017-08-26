@@ -35,6 +35,7 @@ class Neighbor(models.Model):
     type = models.CharField(max_length=30, null=True)
     bank_account = models.CharField(max_length=30, null=True)
     _bank = models.ForeignKey('Bank', on_delete=models.CASCADE, null=True)
+    # isVerified = models.BooleanField(default=False)
 
 class Owner(models.Model):
     _apartment = models.ForeignKey('Apartment' , on_delete=models.CASCADE)
@@ -54,9 +55,10 @@ class Receipt(models.Model):
         unique_together = ('receipt_number' , '_bank')
 
 class Facility(models.Model):
-    name = models.CharField(max_length=20)
-    type = models.CharField(max_length=20)
-    _building = models.ForeignKey('Building' , on_delete=models.CASCADE , null=True)
+    # id = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=20, primary_key=True)
+    location = models.CharField(max_length=40, null=True, blank=True)
+    _building = models.ForeignKey('Building' , on_delete=models.CASCADE , null=True, blank=True)
 
     class Meta:
         unique_together = ('name' , '_building')
@@ -65,13 +67,12 @@ class Facility(models.Model):
 class Reservation(models.Model):
     neighbor = models.ForeignKey('Neighbor' , on_delete=models.CASCADE)
     facility = models.ForeignKey('Facility' , on_delete=models.CASCADE)
-    day = models.IntegerField(default=1)
-    time_partition = models.IntegerField(default=1)
+    time = models.ForeignKey('AvailableTimes', on_delete=models.CASCADE, default=1)
     #duration = models.IntegerField(default=1)
     #date_time = models.DateTimeField('date of reservation')
 
     class Meta:
-        unique_together = ('neighbor' , 'facility')
+        unique_together = ('neighbor' , 'facility', 'time')
 
 class Contract(models.Model):
     _owner = models.ForeignKey('Owner' , on_delete=models.CASCADE)
@@ -85,26 +86,30 @@ class Contract(models.Model):
         unique_together = ('_owner' , 'tenant' , '_apartment')
 
 class Dashboard(models.Model):
-    _building = models.ForeignKey('Building' , on_delete=models.CASCADE)
-    date_time = models.DateTimeField('notification date')
-    title = models.CharField(max_length=30)
-    text = models.CharField(max_length=300)
+    id = models.IntegerField(primary_key=True)
+    _building = models.ForeignKey('Building' , on_delete=models.CASCADE, null=True)
+    date_time = models.DateTimeField('notification date', null=True, blank=True)
+    title = models.CharField(max_length=30, null=True)
+    text = models.TextField(null=True)
 
     class Meta:
         unique_together = ('_building' , 'date_time')
 
-class UnAvailableTimes(models.Model):
+class AvailableTimes(models.Model):
+    id = models.IntegerField(primary_key=True)
     facility = models.ForeignKey('Facility' , on_delete=models.CASCADE)
     day = models.IntegerField(default=1)
-    time_partition = models.IntegerField(default=1)
+    hour = models.IntegerField(default=1)
+    duration = models.IntegerField(default=1)
     #date_time = models.DateTimeField('available times')
 
 class Charge(models.Model):
-    #title = models.CharField(max_length=30)
+    id = models.IntegerField(primary_key=True)
+    title = models.CharField(max_length=30)
     price = models.IntegerField(default=300000)
     due_date = models.DateField('charge due date')
     is_payed = models.BooleanField(default=False)
-    receipt = models.ForeignKey('Receipt' , on_delete=models.CASCADE , null=True)
+    receipt = models.ForeignKey('Receipt' , on_delete=models.CASCADE , null=True, blank=True)
     _apartment = models.ForeignKey('Apartment' , on_delete=models.CASCADE)
 
 
@@ -140,11 +145,12 @@ class Bill(models.Model):
 class RequestLetter(models.Model):
     sender = models.ForeignKey('Neighbor' , related_name='polls_RequestLetter_related' ,
                                related_query_name='polls_RequestLetters')
+    date_time = models.DateTimeField(null=True, blank=True)
     receiver = models.ForeignKey('Neighbor' , default=0)
     #number = models.IntegerField(default=1)
     title = models.CharField(max_length=30 , default='')
     type = models.CharField(max_length=30)
-    text = models.CharField(max_length=300)
+    text = models.TextField()
 
 
 #not used
@@ -155,8 +161,6 @@ class WarningLetter(models.Model):
 
     class Meta:
         unique_together = ('receiving_neighbor' , 'number')
-
-
 
 
 #class ApartmentForm(ModelForm):

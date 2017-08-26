@@ -9,7 +9,7 @@ from .models import Facility
 from .models import Reservation
 from .models import Contract
 from .models import Dashboard
-from .models import UnAvailableTimes
+from .models import AvailableTimes
 from .models import Charge
 from .models import MonthlyPayment
 from .models import Bill
@@ -27,7 +27,7 @@ admin.site.register(Facility)
 admin.site.register(Reservation)
 admin.site.register(Contract)
 admin.site.register(Dashboard)
-admin.site.register(UnAvailableTimes)
+admin.site.register(AvailableTimes)
 admin.site.register(Charge)
 admin.site.register(MonthlyPayment)
 admin.site.register(Bill)

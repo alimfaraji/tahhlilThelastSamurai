@@ -280,7 +280,7 @@
                             <span class="profile-ava">
                                 <img alt="" src="img/avatar1_small.jpg">
                             </span>
-                            <span class="username">Khashayar Gatmiry</span>
+                            <span class="username">{{ user.user.first_name }}</span>
                             <b class="caret"></b>
                         </a>
                         <ul class="dropdown-menu extended logout">
@@ -330,7 +330,7 @@
                   </li>
 
 				  <li>
-                      <a class="" href="{%  url 'neighbors' 0%}">
+                      <a class="" href="{%  url 'neighbors'     %}">
                           <i class="icon_genius"></i>
                           <span>Neighbors</span>
                       </a>
@@ -344,7 +344,7 @@
                           <span class="menu-arrow arrow_carrot-right"></span>
                       </a>
                       <ul class="sub">
-                          <li><a class="" href="{%  url 'financial' 2 'charge'%}">Charges</a></li>
+                          <li><a class="" href="{%  url 'charge'%}">Charges</a></li>
                           <li><a class="" href="/home/financial/bill">Bills</a></li>
                           <li><a class="" href="{%  url 'financial' 2 'tenant'%}">Tenant</a></li>
                       </ul>
@@ -352,9 +352,9 @@
 
 
 				  <li>
-                      <a class="" href="{%  url 'reservation' 2 0%}">
+                      <a class="" href="{%  url 'facilities' %}">
                           <i class="icon_genius"></i>
-                          <span>Reservations</span>
+                          <span>Facilities</span>
                       </a>
                   </li>
 
@@ -394,7 +394,7 @@
                     <div class="profile-widget profile-widget-info">
                           <div class="panel-body">
                             <div class="col-lg-2 col-sm-2">
-                              <h4>Khashayar Gatmiry</h4>
+                              <h4></h4>
                               <div class="follow-ava">
                                   {% load static %}
                                   <img src="{% static "polls/img/mypic.jpg" %}" alt="">

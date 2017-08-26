@@ -1,10 +1,112 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>facility page</title>
-</head>
-<body>
+{% extends 'polls/temp1.html' %}
+{% load poll_extras %}
+{% block content %}
+{#    {% if user.type == 'admin' %}#}
+{#<div class="panel-group m-bot20" id="accordion">#}
+{#                          <div class="panel panel-default">#}
+{#                              <div class="panel-heading">#}
+{#                                  <h4 class="panel-title">#}
+{#                                      <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseOne">#}
+{#                                          Add To Dashboard#}
+{#                                      </a>#}
+{#                                  </h4>#}
+{#                              </div>#}
+{#                            {{ addFacilityForm.dateTime }}#}
+{#                          </div>#}
 
-</body>
-</html>
+{#</div>#}
+{#    <div class="panel-body">#}
+{#    {% endif %}#}
+    {% if user.type == "admin" %}
+                                   <!--collapse start-->
+                      <div class="panel-group m-bot20" id="accordion">
+                          <div class="panel panel-default">
+                              <div class="panel-heading">
+                                  <h4 class="panel-title">
+                                      <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
+                                          Add a Facility
+                                      </a>
+                                  </h4>
+                              </div>
+                              <div id="collapseOne" class="panel-collapse collapse">
+{#                                  <div class="panel-body">#}
+{##}
+{#                                      <div class="container">#}
+    <div class="panel-body">
+      <form  method="post">
+          {% csrf_token %}
+          <div class="form-group">
+            <label class="col-sm-2 control-label">Name</label>
+              <div class="col-sm-10">
+              {{ addFacilityForm.name }}
+            </div>
+                <label class="col-sm-2 control-label">Location</label>
+                <div class="col-sm-10">
+              {{ addFacilityForm.location }}
+                </div>
+              <label class="col-sm-2 control-label">Available Times</label>
+                <div class="col-sm-10">
+              {{ addFacilityForm.availTimes }}
+                </div>
+            <div class="form-group">
+            <input name="addToDashbord" class="btn btn-info btn-lg btn-block" type="submit" value="ADD" />
+{#            <button class="btn btn-primary btn-lg btn-block" type="submit">Login</button>#}
+{#            <button class="btn btn-info btn-lg btn-block" type="submit">Signup</button>#}
+            </div>
+          </div>
+      </form>
+        </div>
+{#    </div>#}
+{##}
+{#                                  </div>#}
+                              </div>
+                          </div>
+
+                      </div>
+                      <!--collapse end-->
+                                  {% endif %}
+    <div class="row">
+     <div class="col-sm-6">
+                      <section class="panel">
+                        <header class="panel-heading">
+                              All Facilities
+                          </header>
+        {% for facility in facilities %}
+                        <div class="panel panel-primary">
+                        {% if user.type == 'admin' %}
+                            <a class="label label-danger" href="{% url 'removeFacility' facility.name facility.location %}">delete</a>
+                        {% endif %}
+                          <div class="panel-heading">{{ facility.name }}: {{ facility.location }}</div>
+                          <div class="panel-content">
+                              <div class="col-sm-6">
+                                  please select the time:
+                              </div>
+                          <div class="col-sm-6">
+                                                    {% for timee in timess|keyvalue:facility.name %}
+                                                        <a href= "{% url 'reserveFacility' facility.name timee.id %}"> {{ timee.day }}: {{ timee.hour }} for {{ timee.duration }} hours </a> <br/>
+{#                                                        <option value={{ timee.day }}>   {{ timee.day }}</option>#}
+                                                    {% endfor %}
+
+                          </div>
+                          hi
+                          </div>
+                        </div>
+    {% endfor %}
+    </section>
+    </div>
+    <div class="col-sm-6">
+                      <section class="panel">
+                        <header class="panel-heading">
+                              My Reservations
+                          </header>
+                          <div class="panel panel-info">
+                              {% for myReserve in myReservations %}
+                                     <a class="label label-danger" href="{% url 'deleteReservation'  myReserve.neighbor.user.username myReserve.facility.name myReserve.time.id %}">delete</a>
+                                  {{ myReserve.facility.name }} from {{ myReserve.time.hour }} for {{ myReserve.time.duration }} hours
+                              {% endfor %}
+                          </div>
+                      </section>
+    </div>
+    </div>
+{% endblock  %}
+      <!--main content end-->
