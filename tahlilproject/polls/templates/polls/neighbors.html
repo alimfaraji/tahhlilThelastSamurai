@@ -12,17 +12,21 @@
                           <table class="table table-striped table-advance table-hover">
                            <tbody>
                               <tr>
-                                  <th><i class="icon_profile"></i> Delete</th>
-                                  <th><i class="icon_circle-empty"></i> Username </th>
+                                  {% if user.type == 'admin' %}
+                                  <th><i class="icon_error-circle"></i> Delete</th>
+                                  {% endif %}
+                                  <th><i class="icon_pushpin"></i> Username </th>
                                  <th><i class="icon_profile"></i> First Name</th>
-                                 <th><i class="icon_calendar"></i> Last Name</th>
-                                 <th><i class="icon_mail_alt"></i> Apartment</th>
-                                 <th><i class="icon_mobile"></i> Sex</th>
+                                 <th><i class="icon_profile"></i> Last Name</th>
+                                 <th><i class="icon_house"></i> Apartment</th>
+                                 <th><i class="icon_drawer"></i> Sex</th>
 {#                                 <th><i class="icon_cogs"></i> Send Message </th>#}
                               </tr>
                 {% for neighbor in neighbors%}
                               <tr>
-                              <td> <a class="label-danger" href="{% url 'removeNeighbor' neighbor.user.username %}"> Delete </a> </td>
+                              {% if user.type == 'admin' %}
+                                  <td> <a class="label label-danger" href="{% url 'removeNeighbor' neighbor.user.username %}"> Delete </a> </td>
+                                  {% endif %}
                               <td> <a href="{% url 'detailsNeighbor' neighbor.user.username %}">{{ neighbor.user.username }}</a> </td>
                               <td> {{ neighbor.user.first_name }}</td>
                               <td> {{ neighbor.user.last_name}}</td>

@@ -163,6 +163,11 @@ class WarningLetter(models.Model):
         unique_together = ('receiving_neighbor' , 'number')
 
 
+class Warning(models.Model):
+    receiving_neighbor = models.ForeignKey('Neighbor', on_delete=models.CASCADE)
+    charge = models.ForeignKey('Charge', on_delete=models.CASCADE, null=True, blank=True)
+    bill = models.ForeignKey('Bill', on_delete=models.CASCADE, null=True, blank=True)
+
 #class ApartmentForm(ModelForm):
 #    class Meta:
 #        model = Apartment

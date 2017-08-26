@@ -73,10 +73,10 @@
                           </header>
         {% for facility in facilities %}
                         <div class="panel panel-primary">
-                        {% if user.type == 'admin' %}
-                            <a class="label label-danger" href="{% url 'removeFacility' facility.name facility.location %}">delete</a>
-                        {% endif %}
-                          <div class="panel-heading">{{ facility.name }}: {{ facility.location }}</div>
+                          <div class="panel-heading">
+                              {% if user.type == 'admin' %}
+{#                            <a class="label label-danger" href="{% url 'removeFacility' facility.name facility.location %}">delete</a>#}
+                        {% endif %}{{ facility.name }}: {{ facility.location }}</div>
                           <div class="panel-content">
                               <div class="col-sm-6">
                                   please select the time:

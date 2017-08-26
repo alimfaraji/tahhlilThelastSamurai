@@ -73,25 +73,30 @@
 
 {#                                      <div class="container">#}
     <div class="panel-body">
-      <form  method="post">
+      <form class="form-horizontal" method="post">
           {% csrf_token %}
           <div class="form-group">
             <label class="col-sm-2 control-label">Title</label>
               <div class="col-sm-10">
               {{ addBill.title }}
             </div>
+          </div>
+          <div class="form-group">
                 <label class="col-sm-2 control-label">Price</label>
                 <div class="col-sm-10">
               {{ addBill.price }}
                 </div>
+          </div>
+          <div class="form-group">
               <label class="col-sm-2 control-label">Date</label>
                 <div class="col-sm-10">
               {{ addBill.due_date }}
                 </div>
+          </div>
             <div class="form-group">
             <input name="addingBill" class="btn btn-info btn-lg btn-block" type="submit" value="Add" />
             </div>
-          </div>
+
       </form>
         </div>
 {#    </div>#}
@@ -111,7 +116,7 @@
                                  <th><i class="icon_calendar"></i> Date</th>
                                  <th><i class="icon_mail_alt"></i> Price</th>
                                  <th><i class="icon_mobile"></i> Receipt</th>
-                                 <th><i class="icon_cogs"></i> Send Warning</th>
+                                 <th><i class="icon_cogs"></i>  Warn</th>
                               </tr>
                             {% for bill in allBills %}
                               <tr {% if bill.is_payed == True%} class="success" {% endif %}
@@ -131,7 +136,7 @@
                                  <td>
                                   <div class="btn-group">
 
-                                      <a class="btn btn-primary {% if bill.is_payed == True %} disabled{% endif %}" href="{% url 'bank' "bill" bill.id  %}"><i class="icon_plus_alt2"></i> <b>Warn</b></a>
+                                      <a class="btn btn-primary {% if bill.is_payed == True %} disabled{% endif %}" href="{% url 'warnBill' neighbor.user bill.id  %}"><i class="icon_plus_alt2"></i> <b>Warn</b></a>
 
                                   </div>
                                   </td>
@@ -182,25 +187,30 @@
 
 {#                                      <div class="container">#}
     <div class="panel-body">
-      <form  method="post">
+      <form class="form-horizontal" method="post">
           {% csrf_token %}
           <div class="form-group">
             <label class="col-sm-2 control-label">Title</label>
               <div class="col-sm-10">
               {{ addCharge.title }}
             </div>
+          </div>
+          <div class="form-group">
                 <label class="col-sm-2 control-label">Price</label>
                 <div class="col-sm-10">
               {{ addCharge.price }}
                 </div>
+          </div>
+          <div class="form-group">
               <label class="col-sm-2 control-label">Date</label>
                 <div class="col-sm-10">
               {{ addCharge.due_date }}
                 </div>
+          </div>
             <div class="form-group">
             <input name="addingCharge" class="btn btn-info btn-lg btn-block" type="submit" value="Add" />
             </div>
-          </div>
+
       </form>
         </div>
 {#    </div>#}
@@ -220,7 +230,7 @@
                                  <th><i class="icon_calendar"></i> Date</th>
                                  <th><i class="icon_mail_alt"></i> Price</th>
                                  <th><i class="icon_mobile"></i> Receipt</th>
-                                 <th><i class="icon_cogs"></i> Send Warning</th>
+                                 <th><i class="icon_cogs"></i> Warn</th>
                               </tr>
                             {% for charge in allCharges%}
                               <tr {% if charge.is_payed == True%} class="success" {% endif %}
@@ -240,7 +250,7 @@
                                  <td>
                                   <div class="btn-group">
 
-                                      <a class="btn btn-primary {% if charge.is_payed == True %} disabled{% endif %}" href="{% url 'bank' "bill" charge.id  %}"><i class="icon_plus_alt2"></i> <b>Pay</b></a>
+                                      <a class="btn btn-primary {% if charge.is_payed == True %} disabled{% endif %}" href="{% url 'warnCharge' neighbor.user charge.id  %}"><i class="icon_plus_alt2"></i> <b>Warn</b></a>
 
                                   </div>
                                   </td>

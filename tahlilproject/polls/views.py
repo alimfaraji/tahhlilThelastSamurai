@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect, render_to_response
 from django.http import HttpResponse , HttpResponseRedirect
 from django.urls import reverse
 from .models import Neighbor , RequestLetter, Facility, AvailableTimes
-from .models import Apartment, Building
+from .models import Apartment, Building, Warning
 from .models import Charge , Bill, Dashboard, WarningLetter, Reservation, Bank
 from django.conf import settings
 from django.forms import modelformset_factory
@@ -96,13 +96,15 @@ def removeNeighbor(request, username):
     if request.user.is_authenticated():
         user = Neighbor.objects.get(user=User.objects.get(username=request.user.get_username()))
         neighbor = Neighbor.objects.get(user__username=username)
-        if user.type == 'admin' and user.apartment.building == neighbor.apartment.building and neighbor.type == 'neighbor   ':
+        if user.type == 'admin' and user.apartment.building == neighbor.apartment.building and neighbor.type == 'neighbor':
             neighbor.delete()
             User.objects.get(username = username).delete()
-    return HttpResponseRedirect("../../")
+    return HttpResponseRedirect("/neighbors/")
 
 def index(request):
     username = None
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect('/../login/')
     if request.user.is_authenticated():
         user = Neighbor.objects.get(   user = User.objects.get(username = request.user.get_username())   )
         context = {}
@@ -218,6 +220,11 @@ def index(request):
             context['addNeighbor'] = addNeighbor
 
 
+        context['date'] = date.today();
+
+        allWarnings = Warning.objects.filter(receiving_neighbor=user)
+        context['allWarnings'] = allWarnings
+
         return render(request, 'polls/index.html', context)
     return render(request, 'polls/facility.html', {}) #todo
 
@@ -278,6 +285,27 @@ def detailsNeighbor(request, username):
 
         return  render(request, 'polls/detailsNeighbor.html', context)
     return HttpResponseRedirect('../../../..')
+
+def warnCharge(request, username, id):
+    if request.user.is_authenticated():
+        user = Neighbor.objects.get(user=User.objects.get(username=request.user.get_username()))
+        neighbor = Neighbor.objects.get(user__username=username)
+        if user.type == 'admin' and neighbor.apartment.building == user.apartment.building:
+            charge = Charge.objects.get(id=id)
+            newWarning = Warning(charge=charge, receiving_neighbor=neighbor)
+            newWarning.save()
+    return HttpResponseRedirect('/home/neighbors/')
+
+def warnBill(request, username, id):
+    if request.user.is_authenticated():
+        user = Neighbor.objects.get(user=User.objects.get(username=request.user.get_username()))
+        neighbor = Neighbor.objects.get(user__username=username)
+        if user.type == 'admin' and neighbor.apartment.building == user.apartment.building:
+            bill = Bill.objects.get(id=id)
+            newWarning = Warning(bill=bill, receiving_neighbor=neighbor)
+            newWarning.save()
+    return HttpResponseRedirect('/home/neighbors/')
+
 
 #financial:
 def bankView(request, type, id):

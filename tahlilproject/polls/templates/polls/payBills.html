@@ -14,9 +14,9 @@
                               <tr>
                                  <th><i class="icon_profile"></i> Name</th>
                                  <th><i class="icon_calendar"></i> Date</th>
-                                 <th><i class="icon_mail_alt"></i> Price</th>
-                                 <th><i class="icon_mobile"></i> Receipt</th>
-                                 <th><i class="icon_cogs"></i> </th>
+                                 <th><i class="icon_wallet"></i> Price</th>
+                                 <th><i class="icon_check"></i> Is Payed</th>
+                                 <th><i class="icon_cogs"></i> Pay</th>
                               </tr>
                 {% for bill in bills %}
                               <tr {% if bill.is_payed == True%} class="success" {% endif %}

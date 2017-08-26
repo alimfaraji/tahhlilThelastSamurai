@@ -14,7 +14,7 @@ from .models import Charge
 from .models import MonthlyPayment
 from .models import Bill
 from .models import RequestLetter
-from .models import WarningLetter
+from .models import WarningLetter, Warning
 # Register your models here.
 
 admin.site.register(Neighbor)
@@ -33,3 +33,4 @@ admin.site.register(MonthlyPayment)
 admin.site.register(Bill)
 admin.site.register(RequestLetter)
 admin.site.register(WarningLetter)
+admin.site.register(Warning)
