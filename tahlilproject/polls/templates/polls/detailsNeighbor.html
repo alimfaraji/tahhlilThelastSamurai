@@ -62,11 +62,11 @@
                          <div class="panel-group m-bot20" id="accordionAddBill">
                           <div class="panel panel-default">
                               <div class="panel-heading">
-                                  <h4 class="panel-title">
+{#                                  <h4 class="panel-title">#}
                                       <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionAddBill" href="#collapse">
                                           Add Bill
                                       </a>
-                                  </h4>
+{#                                  </h4>#}
                               </div>
                               <div id="collapse" class="panel-collapse collapse">
 {#                                  <div class="panel-body">#}
@@ -93,9 +93,9 @@
               {{ addBill.due_date }}
                 </div>
           </div>
-            <div class="form-group">
+{#            <div class="form-group">#}
             <input name="addingBill" class="btn btn-info btn-lg btn-block" type="submit" value="Add" />
-            </div>
+{#            </div>#}
 
       </form>
         </div>
@@ -136,7 +136,7 @@
                                  <td>
                                   <div class="btn-group">
 
-                                      <a class="btn btn-primary {% if bill.is_payed == True %} disabled{% endif %}" href="{% url 'warnBill' neighbor.user bill.id  %}"><i class="icon_plus_alt2"></i> <b>Warn</b></a>
+                                      <a class="btn alert-warning {% if bill.is_payed == True %} disabled{% endif %}" href="{% url 'warnBill' neighbor.user bill.id  %}"><i class="icon_mail"></i> <b></b></a>
 
                                   </div>
                                   </td>
@@ -176,11 +176,11 @@
                          <div class="panel-group m-bot20" id="accordionAddCharge">
                           <div class="panel panel-default">
                               <div class="panel-heading">
-                                  <h4 class="panel-title">
+{#                                  <h4 class="panel-title">#}
                                       <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionAddCharge" href="#collapseCharge">
                                           Add Charge
                                       </a>
-                                  </h4>
+{#                                  </h4>#}
                               </div>
                               <div id="collapseCharge" class="panel-collapse collapse">
 {#                                  <div class="panel-body">#}
@@ -207,9 +207,9 @@
               {{ addCharge.due_date }}
                 </div>
           </div>
-            <div class="form-group">
+{#            <div class="form-group">#}
             <input name="addingCharge" class="btn btn-info btn-lg btn-block" type="submit" value="Add" />
-            </div>
+{#            </div>#}
 
       </form>
         </div>
@@ -250,7 +250,7 @@
                                  <td>
                                   <div class="btn-group">
 
-                                      <a class="btn btn-primary {% if charge.is_payed == True %} disabled{% endif %}" href="{% url 'warnCharge' neighbor.user charge.id  %}"><i class="icon_plus_alt2"></i> <b>Warn</b></a>
+                                      <a class="btn alert-warning {% if charge.is_payed == True %} disabled{% endif %}" href="{% url 'warnCharge' neighbor.user charge.id  %}"><i class="icon_mail"></i> </a>
 
                                   </div>
                                   </td>

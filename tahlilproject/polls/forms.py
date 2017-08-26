@@ -19,12 +19,14 @@ class signUpForm(forms.Form):
     bankAccount = forms.CharField()
     bank = forms.CharField()
     firstName = forms.CharField()
+    type = forms.CharField()
     lastName = forms.CharField()
     emailAddress = forms.CharField()
     def __init__(self, *args, **kwargs):
         super(signUpForm, self).__init__(*args, **kwargs)
         self.fields['username'].widget.attrs['class'] = 'form-control'
         self.fields['password'].widget.attrs['class'] = 'form-control'
+        self.fields['type'].widget.attrs['class'] = 'form-control'
         self.fields['nationalID'].widget.attrs['class'] = 'form-control'
         self.fields['apartmentID'].widget.attrs['class'] = 'form-control'
         self.fields['sex'].widget.attrs['class'] = 'form-control'

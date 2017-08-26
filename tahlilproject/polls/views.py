@@ -202,12 +202,13 @@ def index(request):
                                     email=request.POST['emailAddress'], first_name=request.POST['firstName'],
                                     last_name=request.POST['lastName'])
                         user.set_password(request.POST['password'])
-                        user.save()
-                        neighbor = Neighbor(user=user, national_id=request.POST['nationalID'], sex=request.POST['sex'],
-                                            type='neighbor', bank_account=request.POST['bankAccount'])
+                        neighbor = Neighbor(national_id=request.POST['nationalID'], sex=request.POST['sex'],
+                                            type=request.POST['type'] , bank_account=request.POST['bankAccount'])
                         neighbor.apartment = Apartment.objects.get(id=request.POST['apartmentID'])
                         neighbor.bank = Bank.objects.get(name=request.POST['bank'])
                         neighbor.bank_account = form.cleaned_data['bankAccount']
+                        user.save()
+                        neighbor.user = user
                         neighbor.save()
 
 
@@ -223,6 +224,7 @@ def index(request):
             allComplaints = WarningLetter.objects.all().order_by('-date')
             context['allComplaints'] = allComplaints
 
+        user = Neighbor.objects.get(user=User.objects.get(username=request.user.get_username()))
 
         context['date'] = date.today();
 
@@ -256,9 +258,9 @@ def detailsNeighbor(request, username):
         context['date'] = date.today();
 
         if user.type == 'admin' and user.apartment.building == neighbor.apartment.building:
-            allBills = Bill.objects.filter(_apartment=neighbor.apartment)
+            allBills = Bill.objects.filter(_apartment=neighbor.apartment).order_by('-due_date')
             context['allBills'] = allBills
-            allCharges = Charge.objects.filter(_apartment=neighbor.apartment)
+            allCharges = Charge.objects.filter(_apartment=neighbor.apartment).order_by('-due_date')
             context['allCharges'] = allCharges
             if request.method == 'POST':
                 if 'addingBill' in request.POST:
@@ -277,8 +279,8 @@ def detailsNeighbor(request, username):
                         title = addCharge.cleaned_data['title']
                         price = addCharge.cleaned_data['price']
                         due_date = addCharge.cleaned_data['due_date']
-                        apartment = addCharge.apartment
-                        newCharge = Bill(title = title, price = price, due_date=due_date, _apartment=apartment, is_payed=False)
+                        apartment = neighbor.apartment
+                        newCharge = Charge(title = title, price = price, due_date=due_date, _apartment=apartment, is_payed=False)
                         newCharge.save()
 
             addBill = AddBill()
@@ -539,6 +541,8 @@ def deleteReservations(request, username, name, time):
     # neighbor = Neighbor.objects.get( user=User.objects.get(username=username) )
     facilName = Facility.objects.get(name=name)
     aTime = AvailableTimes.objects.get(id=time)
+    aTime.is_reserved = False
+    aTime.save()
     reserve = Reservation.objects.get(neighbor=neighbor, facility=facilName, time=aTime)
     reserve.delete()
     return HttpResponseRedirect("../../../../")
@@ -548,6 +552,8 @@ def reserveFacility(request, name, id):
         user = Neighbor.objects.get(     user = User.objects.get(      username=request.user.get_username())    )
         facility = Facility.objects.get(  name=name  )
         hour = AvailableTimes.objects.get( id = id )
+        hour.is_reserved = True
+        hour.save()
         reservationn = Reservation(neighbor=user, facility=facility, time=hour)
         reservationn.save()
 

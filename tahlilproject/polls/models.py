@@ -97,6 +97,7 @@ class AvailableTimes(models.Model):
     day = models.IntegerField(default=1)
     hour = models.IntegerField(default=1)
     duration = models.IntegerField(default=1)
+    is_reserved = models.BooleanField(default=False)
     #date_time = models.DateTimeField('available times')
 
 class Charge(models.Model):

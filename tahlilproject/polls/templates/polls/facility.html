@@ -85,12 +85,14 @@
                         {% endif %}{{ facility.name }}:
                               {{ facility.location }}</div>
                           <div class="panel-content">
-                              <div class="col-sm-6">
-                                  please select the time:
+                              <div class="col-sm-4">
+                                  Available times:
                               </div>
-                          <div class="col-sm-6">
+                          <div class="col-sm-8">
                                                     {% for timee in timess|keyvalue:facility.name %}
-                                                        <a href= "{% url 'reserveFacility' facility.name timee.id %}"> {{ timee.day }}: {{ timee.hour }} for {{ timee.duration }} hours </a> <br/>
+                                                        <a class="btn btn-success btn-xs {% if timee.is_reserved == True %} disabled {% endif %}" href= "{% url 'reserveFacility' facility.name timee.id %}"><i class="icon_check"></i></a> {{ timee.day }}{% if timee.day == 1 %}st{% endif %}
+                                                        {% if timee.day == 2 %}nd{% endif %}{% if timee.day == 3 %}rd{% endif %}{% if timee.day != 1 and timee.day != 2 and timee.day != 3 %}th {% endif %}
+                                                        day of month, {{ timee.hour }}:00 for {{ timee.duration }} hours <br/>
 {#                                                        <option value={{ timee.day }}>   {{ timee.day }}</option>#}
                                                     {% endfor %}
 
@@ -98,6 +100,7 @@
 
                           </div>
                         </div>
+            <br>
     {% endfor %}
                       </div>
     </section>
