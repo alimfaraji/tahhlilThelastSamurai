@@ -26,7 +26,7 @@
                                  <td>{{ bill.price }}</td>
                                  <td>
                                      {%  if bill.is_payed == True %}
-                                        Payed
+                                        {{ bill.payed_date }}
                                      {% endif %}
                                      {%  if bill.is_payed == False%}
                                          Not payed

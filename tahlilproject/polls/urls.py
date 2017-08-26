@@ -16,6 +16,8 @@ urlpatterns = [
     url(r'^neighbors/detailsNeighbor/([a-z]+)$', views.detailsNeighbor, name='detailsNeighbor'),
     url(r'^neighbors/detailsNeighbor/warnCharge/([a-z]+)/([0-9]+)/$', views.warnCharge, name = 'warnCharge'),
     url(r'^neighbors/detailsNeighbor/warnBill/([a-z]+)/([0-9]+)/$', views.warnBill, name = 'warnBill'),
+    url(r'^owner/$', views.owner, name='owner'),
+    url(r'^financial/tenant/$', views.tenant, name='tenant'),
     url(r'^(?P<id>[0-9]+)/financial/(?P<type>[\w\-]+)/$' , views.financial , name='financial'),
     url(r'^(?P<id>[0-9]+)/financial/(?P<type>[\w\-]+)/pay/(?P<pay>[0-9]+)/$', views.pay, name='pay'),
     url(r'^(?P<id>[0-9]+)/reservation/(?P<reserve>[0-9]+)/$', views.reservation, name='reservation'),
@@ -24,5 +26,5 @@ urlpatterns = [
     url(r'^(?P<id>[0-9]+)/guest/(?P<guest_id>[\w\-]+)/$', views.guest, name='guest'),
     url(r'^(?P<id>[0-9]+)/guest/(?P<guest_id>[\w\-]+)/request$', views.guest_request, name='guest_request'),
     url(r'^(?P<id>[0-9]+)/validation/$', views.validation, name='validation'),
-    url(r'^(?P<id>[0-9]+)/owner/$', views.owner, name='owner'),
+
 ]

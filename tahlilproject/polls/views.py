@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect, render_to_response
 from django.http import HttpResponse , HttpResponseRedirect
 from django.urls import reverse
 from .models import Neighbor , RequestLetter, Facility, AvailableTimes
-from .models import Apartment, Building, Warning
+from .models import Apartment, Building, Warning, MonthlyPayment, WarningLetter
 from .models import Charge , Bill, Dashboard, WarningLetter, Reservation, Bank
 from django.conf import settings
 from django.forms import modelformset_factory
@@ -17,7 +17,7 @@ from django.template import loader
 # Create your views here.
 
 from .forms import LoginForm, bankForm, AddDashbordForm, signUpForm, AddFacilityForm, SendMessageForm, EditProfileForm
-from .forms import AddBuilding, AddApartment, AddBill
+from .forms import AddBuilding, AddApartment, AddBill, OwnerWarningForm, OwnerContractForm
 from django.contrib.auth.models import User
 
 #registeration, login and logout:
@@ -113,7 +113,8 @@ def index(request):
         context['dashbords'] = dashbords
         messages = RequestLetter.objects.filter(receiver=user).order_by('-date_time')
         context['messages'] = messages
-        warnings = WarningLetter.objects.filter(receiving_neighbor=user)
+        # warnings = WarningLetter.objects.filter()
+        warnings = Warning.objects.filter(receiving_neighbor=user)
         context['warnings'] = warnings
 
         # for admin:
@@ -219,6 +220,9 @@ def index(request):
             addNeighbor = signUpForm()
             context['addNeighbor'] = addNeighbor
 
+            allComplaints = WarningLetter.objects.all().order_by('-date')
+            context['allComplaints'] = allComplaints
+
 
         context['date'] = date.today();
 
@@ -319,6 +323,7 @@ def bankView(request, type, id):
             form = bankForm()
         if form.is_valid():
             bill.is_payed = True
+            bill.payed_date = date.today()
             bill.save()
         return render(request, 'polls/bank.html', {'form': form, 'type' : type})
     else:
@@ -332,9 +337,40 @@ def bankView(request, type, id):
                 form = bankForm()
             if form.is_valid():
                 charge.is_payed = True
+                charge.payed_date = date.today()
                 charge.save()
             return render(request, 'polls/bank.html', {'form': form, 'type' : type})
+        else:
+            if type == 'tenant':
+                tenant = MonthlyPayment.objects.get(id=id)
+                if tenant.is_payed == True:
+                    return HttpResponseRedirect('../../../home/financial/tenant/')
+                if request.method == 'POST':
+                    form = bankForm(request.POST)
+                else:
+                    form = bankForm()
+                if form.is_valid():
+                    tenant.is_payed = True
+                    tenant.payed_date = date.today()
+                    tenant.save()
+                return render(request, 'polls/bank.html', {'form': form, 'type': type})
 
+def tenant(request):
+    username = None
+    if request.user.is_authenticated():
+        username = request.user.get_username()
+        user = User.objects.get(username=username)
+        neighbor = Neighbor.objects.all().get(user=user)
+        # neighbor = user.user;
+        context = {}
+        context['user'] = neighbor
+        context['date'] = date.today();
+        monthlyPayments = {}
+        if neighbor.apartment is not None:
+            monthlyPayments = MonthlyPayment.objects.filter(apartment=neighbor.apartment).order_by('-due_date')
+        context['bills'] = monthlyPayments
+        return render(request, 'polls/payBills.html', context)
+    return HttpResponseRedirect('/login/')
 
 def payBills(request):
     username = None
@@ -389,8 +425,38 @@ def guest(request , id , guest_id):
 def validation(request , id):
     return render(request , 'polls/validation.html' , {'id' : id})
 
-def owner(request , id):
-    return render(request, 'polls/owner.html', {'id': id})
+def owner(request):
+    context = {}
+    if request.user.is_authenticated():
+        owner = Neighbor(neighbor_name=request.POST.get('name', False),
+                            neighbor_family_name=request.POST.get('family_name', False),
+                            national_id=request.POST.get('national_id', False))
+        if owner.type == 'owner':
+            allPayments = MonthlyPayment.objects.filter(owner=owner)
+            context['allPayments'] = allPayments
+
+            if request.method == 'POST':
+                if 'sendWarning' in request.POST:
+                    warningForm = OwnerWarningForm(request.POST)
+                    if warningForm.is_valid():
+                        newWarning = WarningLetter(owner=owner, title=warningForm.cleaned_data['title'], text=warningForm.cleaned_data['text'], date=date.today())
+                        newWarning.save()
+
+                if 'sendingContract' in request.POST:
+                    contractForm = OwnerContractForm(request.POST)
+                    if contractForm.is_valid():
+                        newContract = MonthlyPayment(price=contractForm.cleaned_data['price'], due_date=contractForm.cleaned_data['due_date'])
+                        newContract.apartment = owner.apartment
+                        newContract.save()
+
+
+            contractForm = OwnerContractForm()
+            context['ownerContractForm'] = contractForm
+
+            warningForm = OwnerWarningForm()
+            context['warningForm'] = warningForm
+
+    return render(request, 'polls/owner.html', context)
 
 def pay(request , id , type , pay):
     print('im in!')
@@ -431,7 +497,7 @@ def facilities(request):#todo
         timess = {}
         for facility in allFacilities:
             temp = Reservation.objects.filter(facility=facility)
-            allTimesss = [2]
+            allTimesss = []
             # for i in range(0, temp.__len__()):
             #     allTimesss[i] = temp[i].time
             for t in temp:
@@ -495,6 +561,5 @@ def removeFacility(request, name, floor):
         if user.type == 'admin':
             facility = Facility.objects.get(name=name, location=floor)
             facility.delete()
-            facility.save()
     return HttpResponseRedirect('../../../')
 

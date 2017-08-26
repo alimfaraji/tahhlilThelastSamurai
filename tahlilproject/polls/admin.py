@@ -3,11 +3,10 @@ from .models import Neighbor
 from .models import Bank
 from .models import Apartment
 from .models import Building
-from .models import Owner
-from .models import Receipt
+# from .models import Receipt
 from .models import Facility
 from .models import Reservation
-from .models import Contract
+# from .models import Contract
 from .models import Dashboard
 from .models import AvailableTimes
 from .models import Charge
@@ -21,11 +20,10 @@ admin.site.register(Neighbor)
 admin.site.register(Bank)
 admin.site.register(Apartment)
 admin.site.register(Building)
-admin.site.register(Owner)
-admin.site.register(Receipt)
+# admin.site.register(Receipt)
 admin.site.register(Facility)
 admin.site.register(Reservation)
-admin.site.register(Contract)
+# admin.site.register(Contract)
 admin.site.register(Dashboard)
 admin.site.register(AvailableTimes)
 admin.site.register(Charge)

@@ -334,9 +334,53 @@
                                   </div>
 
                               {% if user.type == 'admin' %}
+
+
+
                                 <div id="admin-section" class="tab-pane">
+
+
+
+
                                     <section class="panel">
                                           <div class="panel-group m-bot20" id="accordion3">
+
+{#                                              hellllll#}
+                                              <div class="panel panel-default">
+                              <div class="panel-heading">
+                                  <h4 class="panel-title">
+                                      <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion3" href="#complaints">
+                                          List of Complaints from Owners
+                                      </a>
+                                  </h4>
+                              </div>
+                              <div id="complaints" class="panel-collapse collapse">
+{#                                  <div class="panel-body">#}
+{##}
+{#                                      <div class="container">#}
+    <div class="panel-body">
+        {% for complaint in allComplaints %}
+            <div class="panel panel-primary">
+                                                      <div class="panel-heading">
+                                                          <strong>{{ complaint.title }}: </strong> from {{ complaint.owner }} on {{ complaint.date }}
+
+
+                                                          </br> </div>
+
+                                                      <div clas="panel-content">{{ complaint.text }}</div>
+                                                </div>
+        {% endfor %}
+        </div>
+{#    </div>#}
+{##}
+{#                                  </div>#}
+                              </div>
+                          </div>
+
+
+{#                                              hellllll#}
+
+
                           <div class="panel panel-default">
                               <div class="panel-heading">
                                   <h4 class="panel-title">
@@ -524,12 +568,24 @@
             </div>
           </div>
       </form>
+
+
+
         </div>
 {#    </div>#}
 {##}
 {#                                  </div>#}
                               </div>
+
                           </div>
+
+
+
+
+
+
+
+
 
 {#                                              end: add neighbor#}
                                           </div>

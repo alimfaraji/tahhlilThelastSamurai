@@ -6,9 +6,9 @@ from django.contrib.auth.models import User
 
 # Create your models here.
 
-
-class Salam(models.Model):
-    esm = models.CharField(max_length=20 , primary_key=True)
+#
+# class Salam(models.Model):
+#     esm = models.CharField(max_length=20 , primary_key=True)
 
 class Building(models.Model):
     postal_code = models.CharField(max_length=10 , primary_key=True)
@@ -37,22 +37,18 @@ class Neighbor(models.Model):
     _bank = models.ForeignKey('Bank', on_delete=models.CASCADE, null=True)
     # isVerified = models.BooleanField(default=False)
 
-class Owner(models.Model):
-    _apartment = models.ForeignKey('Apartment' , on_delete=models.CASCADE)
-    national_id = models.CharField(max_length=10 , primary_key=True)
-
 class Bank(models.Model):
     name = models.CharField(primary_key=True , max_length=20)
 
 
-class Receipt(models.Model):
-    receipt_number = models.IntegerField()
-    _bank = models.ForeignKey('Bank' , on_delete=models.CASCADE)
-    price = models.IntegerField()
-    date = models.DateField()
-
-    class Meta:
-        unique_together = ('receipt_number' , '_bank')
+# class Receipt(models.Model):
+#     receipt_number = models.IntegerField()
+#     _bank = models.ForeignKey('Bank' , on_delete=models.CASCADE)
+#     price = models.IntegerField()
+#     date = models.DateField()
+#
+#     class Meta:
+#         unique_together = ('receipt_number' , '_bank')
 
 class Facility(models.Model):
     # id = models.AutoField(primary_key=True)
@@ -74,16 +70,16 @@ class Reservation(models.Model):
     class Meta:
         unique_together = ('neighbor' , 'facility', 'time')
 
-class Contract(models.Model):
-    _owner = models.ForeignKey('Owner' , on_delete=models.CASCADE)
-    tenant = models.ForeignKey('Neighbor' , on_delete=models.CASCADE)
-    _apartment = models.ForeignKey('Apartment' , on_delete=models.CASCADE)
-    payement_date = models.DateField('date for payement')
-    payement = models.IntegerField(default=1000000)
-    backup_payement = models.IntegerField(default=4000000)
-
-    class Meta:
-        unique_together = ('_owner' , 'tenant' , '_apartment')
+# class Contract(models.Model):
+#     _owner = models.ForeignKey('Owner' , on_delete=models.CASCADE)
+#     tenant = models.ForeignKey('Neighbor' , on_delete=models.CASCADE)
+#     _apartment = models.ForeignKey('Apartment' , on_delete=models.CASCADE)
+#     payement_date = models.DateField('date for payement')
+#     payement = models.IntegerField(default=1000000)
+#     backup_payement = models.IntegerField(default=4000000)
+#
+#     class Meta:
+#         unique_together = ('_owner' , 'tenant' , '_apartment')
 
 class Dashboard(models.Model):
     id = models.IntegerField(primary_key=True)
@@ -108,8 +104,9 @@ class Charge(models.Model):
     title = models.CharField(max_length=30)
     price = models.IntegerField(default=300000)
     due_date = models.DateField('charge due date')
+    payed_date = models.DateField(null=True, blank=True)
     is_payed = models.BooleanField(default=False)
-    receipt = models.ForeignKey('Receipt' , on_delete=models.CASCADE , null=True, blank=True)
+    # receipt = models.ForeignKey('Receipt' , on_delete=models.CASCADE , null=True, blank=True)
     _apartment = models.ForeignKey('Apartment' , on_delete=models.CASCADE)
 
 
@@ -118,24 +115,24 @@ class Charge(models.Model):
 
 
 class MonthlyPayment(models.Model):
-    tenant = models.ForeignKey('Neighbor' , on_delete=models.CASCADE)
-    owner = models.ForeignKey('Owner' , on_delete=models.CASCADE)
+    # tenant = models.ForeignKey('Neighbor' , on_delete=models.CASCADE)
+    id = models.IntegerField(primary_key=True)
+    owner = models.ForeignKey('Neighbor' , on_delete=models.CASCADE, null=True, blank=True)
+    apartment = models.ForeignKey('Apartment', on_delete=models.CASCADE, null=True, blank=True)
     due_date = models.DateField('date of payment')
-    amount = models.IntegerField(default=2000000)
+    price = models.IntegerField(default=2000000)
     is_payed = models.BooleanField(default=False)
     delay_time = models.IntegerField(default=0)
-
-    class Meta:
-        unique_together = ('due_date', 'tenant')
-
+    payed_date = models.IntegerField(null=True, blank=True)
 
 class Bill(models.Model):
     id = models.IntegerField(primary_key=True)
     title = models.CharField(max_length=30)
     price = models.IntegerField(default=300000)
     due_date = models.DateField('charge due date')
+    payed_date = models.DateField(null=True, blank=True)
     is_payed = models.BooleanField(default=False)
-    receipt = models.ForeignKey('Receipt', on_delete=models.CASCADE,blank=True, null=True)
+    # receipt = models.ForeignKey('Receipt', on_delete=models.CASCADE,blank=True, null=True)
     _apartment = models.ForeignKey('Apartment', on_delete=models.CASCADE)
 
     class Meta:
@@ -155,12 +152,11 @@ class RequestLetter(models.Model):
 
 #not used
 class WarningLetter(models.Model):
-    receiving_neighbor = models.ForeignKey('Neighbor', on_delete=models.CASCADE)
-    number = models.IntegerField(default=1)
-    text = models.CharField(max_length=300)
-
-    class Meta:
-        unique_together = ('receiving_neighbor' , 'number')
+    # receiving_neighbor = models.ForeignKey('Neighbor', on_delete=models.CASCADE, null=True, blank= True)
+    owner = models.ForeignKey('Neighbor', on_delete=models.CASCADE, null=True, blank=True)
+    title = models.CharField(default="bad neighbor", max_length=300)
+    text = models.CharField(max_length=30000)
+    date = models.DateField(null=True, blank=True)
 
 
 class Warning(models.Model):

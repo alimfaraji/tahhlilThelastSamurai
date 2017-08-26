@@ -321,7 +321,9 @@
       <aside>
           <div id="sidebar"  class="nav-collapse ">
               <!-- sidebar menu start-->
+
               <ul class="sidebar-menu">
+              {% if user.type != 'owner' %}
                   <li class="active">
                       <a class="" href="{%  url 'index'%}">
                           <i class="icon_house_alt"></i>
@@ -346,7 +348,7 @@
                       <ul class="sub">
                           <li><a class="" href="{%  url 'charge'%}">Charges</a></li>
                           <li><a class="" href="/home/financial/bill">Bills</a></li>
-                          <li><a class="" href="{%  url 'financial' 2 'tenant'%}">Tenant</a></li>
+                          <li><a class="" href="{%  url 'tenant'%}">Tenant</a></li>
                       </ul>
                   </li>
 
@@ -357,10 +359,10 @@
                           <span>Facilities</span>
                       </a>
                   </li>
-
-                  {% if 2 == '0019290209' %}
+                {% endif %}
+              {% if user.type == 'owner' %}
 				  <li>
-                      <a class="" href="{%  url 'owner' 2%}">
+                      <a class="" href="{%  url 'owner' %}">
                           <i class="icon_genius"></i>
                           <span>Owner</span>
                       </a>

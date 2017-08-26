@@ -129,3 +129,19 @@ class AddBill(forms.Form):
         self.fields['title'].widget.attrs['class'] = 'form-control'
         self.fields['price'].widget.attrs['class'] = 'form-control'
         self.fields['due_date'].widget.attrs['class'] = 'form-control'
+
+class OwnerWarningForm(forms.Form):
+    title = forms.CharField()
+    text = forms.CharField(widget=forms.Textarea)
+    def __init__(self, *args, **kwargs):
+        super(OwnerWarningForm, self).__init__(*args, **kwargs)
+        self.fields['title'].widget.attrs['class'] = 'form-control'
+        self.fields['text'].widget.attrs['class'] = 'form-control'
+
+class OwnerContractForm(forms.Form):
+    price = forms.IntegerField()
+    due_date = forms.DateField()
+    def __init__(self, *args, **kwargs):
+        super(OwnerContractForm, self).__init__(*args, **kwargs)
+        self.fields['price'].widget.attrs['class'] = 'form-control'
+        self.fields['due_date'].widget.attrs['class'] = 'form-control'
