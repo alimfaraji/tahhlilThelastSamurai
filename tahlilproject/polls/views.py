@@ -37,18 +37,22 @@ def signupView(request):
         return render(request, 'polls/signUp.html', context)
     else:
         form = signUpForm(request.POST)
-        if (form.is_valid()):
+        # if (form.is_valid()):
+        if True:
+            # return render(request, 'polls/signUp.html', {})
             user = User(username=request.POST['firstName'], password=request.POST['password'], email=request.POST['emailAddress'], first_name=request.POST['firstName'], last_name=request.POST['lastName'])
             user.set_password(request.POST['password'])
-            user.save()
-            neighbor = Neighbor(user=user, national_id=request.POST['nationalID'], sex=request.POST['sex'], type='neighbor', bank_account=request.POST['bankAccount'])
+            neighbor = Neighbor(national_id=request.POST['nationalID'], sex=request.POST['sex'], type='neighbor', bank_account=request.POST['bankAccount'])
             neighbor.apartment = Apartment.objects.get(id=request.POST['apartmentID'])
             neighbor.bank = Bank.objects.get(name=request.POST['bank'])
+            user.save()
+            neighbor.user = user
             neighbor.save()
             form = LoginForm()
             context = {}
             context['form'] = form
-            return render(request, 'registration/login.html', context)
+            return HttpResponseRedirect('/login/')
+            # return render(request, 'registration/login.html', context)
         context = {}
         context['form'] = form
         return render(request, 'polls/signUp.html', context)
@@ -82,6 +86,8 @@ def loginView(request):
 
 #main parts:
 def removeFromDashbord(request, id):
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect('/login/')
     username = None
     if request.user.is_authenticated():
         user = Neighbor.objects.get(   user = User.objects.get(username = request.user.get_username())   )
@@ -93,13 +99,15 @@ def removeFromDashbord(request, id):
     return HttpResponseRedirect("../")
 
 def removeNeighbor(request, username):
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect('/login/')
     if request.user.is_authenticated():
         user = Neighbor.objects.get(user=User.objects.get(username=request.user.get_username()))
         neighbor = Neighbor.objects.get(user__username=username)
-        if user.type == 'admin' and user.apartment.building == neighbor.apartment.building and neighbor.type == 'neighbor':
+        if user.type == 'admin' and user.apartment.building == neighbor.apartment.building:
             neighbor.delete()
             User.objects.get(username = username).delete()
-    return HttpResponseRedirect("/neighbors/")
+    return HttpResponseRedirect("/login/")
 
 def index(request):
     username = None
@@ -164,6 +172,7 @@ def index(request):
                     user.user.first_name = firstName
                     user.user.last_name = lastName
                     user.user.email = email
+                    user.user.save()
                     if Apartment.objects.filter(id=apartmentID).exists():
                         user.apartment = Apartment.objects.get(id = apartmentID)
                     if Bank.objects.filter(name=bankName).exists():
@@ -235,6 +244,8 @@ def index(request):
     return render(request, 'polls/facility.html', {}) #todo
 
 def neighbors(request):
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect('/login/')
     if request.user.is_authenticated():
         user = Neighbor.objects.get(     user = User.objects.get(      username=request.user.get_username())    )
         context = {}
@@ -245,6 +256,8 @@ def neighbors(request):
     return render(request, 'polls/facility.html', {})  # todo
 
 def detailsNeighbor(request, username):
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect('/login/')
     if request.user.is_authenticated():
         user = Neighbor.objects.get(     user = User.objects.get(      username=request.user.get_username())    )
 
@@ -293,6 +306,8 @@ def detailsNeighbor(request, username):
     return HttpResponseRedirect('../../../..')
 
 def warnCharge(request, username, id):
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect('/login/')
     if request.user.is_authenticated():
         user = Neighbor.objects.get(user=User.objects.get(username=request.user.get_username()))
         neighbor = Neighbor.objects.get(user__username=username)
@@ -303,6 +318,8 @@ def warnCharge(request, username, id):
     return HttpResponseRedirect('/home/neighbors/')
 
 def warnBill(request, username, id):
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect('/login/')
     if request.user.is_authenticated():
         user = Neighbor.objects.get(user=User.objects.get(username=request.user.get_username()))
         neighbor = Neighbor.objects.get(user__username=username)
@@ -315,6 +332,8 @@ def warnBill(request, username, id):
 
 #financial:
 def bankView(request, type, id):
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect('/login/')
     if type == 'bill':
         bill = Bill.objects.get(id=id)
         if bill.is_payed == True:
@@ -358,6 +377,8 @@ def bankView(request, type, id):
                 return render(request, 'polls/bank.html', {'form': form, 'type': type})
 
 def tenant(request):
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect('/login/')
     username = None
     if request.user.is_authenticated():
         username = request.user.get_username()
@@ -371,10 +392,12 @@ def tenant(request):
         if neighbor.apartment is not None:
             monthlyPayments = MonthlyPayment.objects.filter(apartment=neighbor.apartment).order_by('-due_date')
         context['bills'] = monthlyPayments
-        return render(request, 'polls/payBills.html', context)
+        return render(request, 'polls/tenant.html', context)
     return HttpResponseRedirect('/login/')
 
 def payBills(request):
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect('/login/')
     username = None
     if request.user.is_authenticated():
         username = request.user.get_username()
@@ -392,6 +415,8 @@ def payBills(request):
     return HttpResponseRedirect('/login/')
 
 def payCharges(request):
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect('/login/')
     username = None
     if request.user.is_authenticated():
         username = request.user.get_username()
@@ -408,34 +433,28 @@ def payCharges(request):
         return render(request, 'polls/payCharges.html', context)
     return HttpResponseRedirect('/login/')
 
-def financial(request , id , type):
-    print('chtoriiiii', id)
-    neighbor = get_object_or_404(Neighbor , pk=id)
-    print('salammmmm')
-    print(neighbor.neighbor_family_name)
-    apartment = neighbor.apartment
-    return render(request, 'polls/financial.html', {'type' : type , 'id': id , 'apartment':apartment})
-
-def reservation(request , id , reserve):
-    return render(request, 'polls/reservation.html' , {'hasreserve' : reserve , 'id' : id})
-
-
-
-def guest(request , id , guest_id):
-    return render(request , 'polls/guest.html' , {'id' : id , 'guest_id' : guest_id , 'is_modir':(Neighbor.objects.get(pk=id).type == 'modir')})
-
-def validation(request , id):
-    return render(request , 'polls/validation.html' , {'id' : id})
 
 def owner(request):
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect('/login/')
     context = {}
     if request.user.is_authenticated():
-        owner = Neighbor(neighbor_name=request.POST.get('name', False),
-                            neighbor_family_name=request.POST.get('family_name', False),
-                            national_id=request.POST.get('national_id', False))
+        # owner = Neighbor(neighbor_name=request.POST.get('name', False),
+        #                     neighbor_family_name=request.POST.get('family_name', False),
+        #                     national_id=request.POST.get('national_id', False))
+        owner = Neighbor.objects.get(user__username=request.user.get_username())
+        context['owner'] = owner
+        if not owner.type == 'owner':
+            return HttpResponseRedirect('/login/')
         if owner.type == 'owner':
             allPayments = MonthlyPayment.objects.filter(owner=owner)
             context['allPayments'] = allPayments
+
+            numOfPayed = MonthlyPayment.objects.filter(owner=owner, is_payed=True).count()
+            numOfNotPayed = MonthlyPayment.objects.filter(owner = owner, is_payed=False).count()
+
+            context['numOfPayed'] = ((numOfPayed*100)/(numOfNotPayed+numOfPayed))
+            context['numOfNotPayed'] = ((numOfNotPayed*100)/(numOfNotPayed+numOfPayed))
 
             if request.method == 'POST':
                 if 'sendWarning' in request.POST:
@@ -447,7 +466,7 @@ def owner(request):
                 if 'sendingContract' in request.POST:
                     contractForm = OwnerContractForm(request.POST)
                     if contractForm.is_valid():
-                        newContract = MonthlyPayment(price=contractForm.cleaned_data['price'], due_date=contractForm.cleaned_data['due_date'])
+                        newContract = MonthlyPayment(price=contractForm.cleaned_data['price'], due_date=contractForm.cleaned_data['due_date'], owner=owner)
                         newContract.apartment = owner.apartment
                         newContract.save()
 
@@ -460,36 +479,12 @@ def owner(request):
 
     return render(request, 'polls/owner.html', context)
 
-def pay(request , id , type , pay):
-    print('im in!')
-    if(type == 'bill'):
-        bill = Bill.objects.get(pk=pay)
-        bill.is_payed = True
-        bill.save()
-        print('payement',pay)
-    if(type == 'charge'):
-        charge = Charge.objects.get(pk=pay)
-        charge.is_payed = True
-        charge.save()
-    return HttpResponseRedirect(reverse('financial', args=(id , type)))
 
-
-def guest_request(request , id , guest_id):
-    sender = Neighbor.objects.get(pk=id)
-    receiver = Neighbor.objects.get(pk=guest_id)
-    requestLetter = RequestLetter(sender = sender , receiver= receiver , type=request.POST.get('category' , False) , text=request.POST.get('content' , False) , title=request.POST.get('title' , False))
-    requestLetter.save()
-    return HttpResponseRedirect(reverse('neighbors', args=(id,)))
-
-
-def neighbors_add(request , id):
-    neighbor = Neighbor(neighbor_name=request.POST.get('name',False) , neighbor_family_name=request.POST.get('family_name',False) , national_id=request.POST.get('national_id',False))
-    print('victory!')
-    neighbor.save()
-    return HttpResponseRedirect(reverse('neighbors', args=(id,)))
 
 #facilities:
 def facilities(request):#todo
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect('/login/')
     if request.user.is_authenticated():
         user = Neighbor.objects.get(     user = User.objects.get(      username=request.user.get_username())    )
         context = {}
@@ -536,7 +531,7 @@ def facilities(request):#todo
 
 def deleteReservations(request, username, name, time):
     if not request.user.is_authenticated():
-        return HttpResponseRedirect("../../../../../log in")
+        return HttpResponseRedirect("/login")
     neighbor = Neighbor.objects.get( user__username=request.user.get_username() )
     # neighbor = Neighbor.objects.get( user=User.objects.get(username=username) )
     facilName = Facility.objects.get(name=name)
@@ -548,6 +543,8 @@ def deleteReservations(request, username, name, time):
     return HttpResponseRedirect("../../../../")
 
 def reserveFacility(request, name, id):
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect('/login/')
     if request.user.is_authenticated():
         user = Neighbor.objects.get(     user = User.objects.get(      username=request.user.get_username())    )
         facility = Facility.objects.get(  name=name  )
@@ -561,6 +558,8 @@ def reserveFacility(request, name, id):
     return HttpResponseRedirect('../../login/')
 
 def removeFacility(request, name, floor):
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect('/login/')
     if request.user.is_authenticated():
         # user = Neighbor.objects.get(user=User.objects.get(username=request.user.get_username()))
         user = Neighbor.objects.get(user__username=request.user.get_username())

@@ -111,8 +111,8 @@ class Charge(models.Model):
     _apartment = models.ForeignKey('Apartment' , on_delete=models.CASCADE)
 
 
-    class Meta:
-        unique_together = ('due_date' , '_apartment')
+    # class Meta:
+    #     unique_together = ('due_date' , '_apartment')
 
 
 class MonthlyPayment(models.Model):
@@ -124,7 +124,7 @@ class MonthlyPayment(models.Model):
     price = models.IntegerField(default=2000000)
     is_payed = models.BooleanField(default=False)
     delay_time = models.IntegerField(default=0)
-    payed_date = models.IntegerField(null=True, blank=True)
+    payed_date = models.DateField(null=True, blank=True)
 
 class Bill(models.Model):
     id = models.IntegerField(primary_key=True)
@@ -136,8 +136,8 @@ class Bill(models.Model):
     # receipt = models.ForeignKey('Receipt', on_delete=models.CASCADE,blank=True, null=True)
     _apartment = models.ForeignKey('Apartment', on_delete=models.CASCADE)
 
-    class Meta:
-        unique_together = ('due_date', '_apartment')
+    # class Meta:
+    #     unique_together = ('due_date', '_apartment')
 
 
 class RequestLetter(models.Model):

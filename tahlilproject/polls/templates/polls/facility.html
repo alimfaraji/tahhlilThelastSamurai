@@ -82,16 +82,16 @@
                           <div class="panel-heading">
                               {% if user.type == 'admin' %}
                             <a class="label label-danger" href="{% url 'removeFacility' facility.name facility.location %}">delete</a>
-                        {% endif %}{{ facility.name }}:
-                              {{ facility.location }}</div>
+                              {% endif %} <strong>{{ facility.name }} </strong>:
+                             placed on floor {{ facility.location }}
+                          </div>
                           <div class="panel-content">
                               <div class="col-sm-4">
                                   Available times:
                               </div>
                           <div class="col-sm-8">
                                                     {% for timee in timess|keyvalue:facility.name %}
-                                                        <a class="btn btn-success btn-xs {% if timee.is_reserved == True %} disabled {% endif %}" href= "{% url 'reserveFacility' facility.name timee.id %}"><i class="icon_check"></i></a> {{ timee.day }}{% if timee.day == 1 %}st{% endif %}
-                                                        {% if timee.day == 2 %}nd{% endif %}{% if timee.day == 3 %}rd{% endif %}{% if timee.day != 1 and timee.day != 2 and timee.day != 3 %}th {% endif %}
+                                                        <a class="btn btn-success btn-xs {% if timee.is_reserved == True %} disabled {% endif %}" href= "{% url 'reserveFacility' facility.name timee.id %}"><i class="icon_check"></i></a> {{ timee.day }}{% if timee.day == 1 %}st{% endif %}{% if timee.day == 2 %}nd{% endif %}{% if timee.day == 3 %}rd{% endif %}{% if timee.day != 1 and timee.day != 2 and timee.day != 3 %}th {% endif %}
                                                         day of month, {{ timee.hour }}:00 for {{ timee.duration }} hours <br/>
 {#                                                        <option value={{ timee.day }}>   {{ timee.day }}</option>#}
                                                     {% endfor %}
@@ -111,10 +111,25 @@
                               My Reservations
                           </header>
                           <div class="panel panel-info">
+{#                          <br>#}
+                          <div class="panel-body">
                               {% for myReserve in myReservations %}
-                                     <a class="label label-danger" href="{% url 'deleteReservation'  myReserve.neighbor.user.username myReserve.facility.name myReserve.time.id %}">delete</a>
-                                  {{ myReserve.facility.name }} from {{ myReserve.time.hour }} for {{ myReserve.time.duration }} hours
+{#                                  <br>#}
+                                  <div class="alert alert-info fade in">
+{#                                  <button data-dismiss="alert" class="close close-sm" type="button">#}
+{#                                      <i class="icon-remove"></i>#}
+{#                                  </button>#}
+                                        <a class="label label-danger" href="{% url 'deleteReservation'  myReserve.neighbor.user.username myReserve.facility.name myReserve.time.id %}">delete</a>
+                                      <strong>{{ myReserve.facility.name }}</strong> on
+                                      {{ myReserve.time.day }}{% if myReserve.time.day == 1 %}st{% endif %}{% if myReserve.time.day == 2 %}nd{% endif %}{% if myReserve.time.day == 3 %}rd{% endif %}{% if myReserve.time.day != 1 and myReserve.time.day != 2 and myReserve.time.day != 3 %}th {% endif %}
+                                      day of month,
+                                      at {{ myReserve.time.hour }}:00 for {{ myReserve.time.duration }} hours
+{#                                  <strong>Heads up!</strong> This alert needs your attention, but it's not super important.#}
+                              </div>
+
+{#                                  <br>#}
                               {% endfor %}
+                          </div>
                           </div>
                       </section>
     </div>
