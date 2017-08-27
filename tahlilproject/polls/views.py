@@ -92,11 +92,11 @@ def removeFromDashbord(request, id):
     if request.user.is_authenticated():
         user = Neighbor.objects.get(   user = User.objects.get(username = request.user.get_username())   )
         if (user.type != 'admin'):
-            return HttpResponseRedirect("../")
+            return HttpResponseRedirect("/home/index/")
         dashbord = Dashboard.objects.get(id= id)
         dashbord.delete()
-        return HttpResponseRedirect("../")
-    return HttpResponseRedirect("../")
+        return HttpResponseRedirect("/home/index/")
+    return HttpResponseRedirect("/home/index/")
 
 def removeNeighbor(request, username):
     if not request.user.is_authenticated():
